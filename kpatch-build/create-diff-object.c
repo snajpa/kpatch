@@ -1708,6 +1708,11 @@ static void kpatch_replace_sections_syms(struct kpatch_elf *kelf)
 
 			if (!found && !is_string_literal_section(rela->sym->sec) &&
 			    strncmp(rela->sym->name, ".rodata", 7)) {
+				if (strncmp(rela->sym->name, ".init.text", 10) == 0) {
+					log_normal("%s+0x%x: can't find replacement symbol for %s+%ld reference, skipping",
+					      relasec->base->name, rela->offset, rela->sym->name, rela->addend);
+					continue;
+				}
 				ERROR("%s+0x%x: can't find replacement symbol for %s+%ld reference",
 				      relasec->base->name, rela->offset, rela->sym->name, rela->addend);
 			}
